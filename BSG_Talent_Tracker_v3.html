@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSG · Talent Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:        #99bbdd;
+  --blue-mid:    #7aaace;
+  --blue-light:  #c8ddef;
+  --blue-xlight: #eef4fa;
+  --pink:        #ed80c6;
+  --pink-light:  #f6bfe3;
+  --pink-xlight: #fdf0f9;
+  --white:       #ffffff;
+  --gray-50:     #f7f8fb;
+  --gray-100:    #eef0f4;
+  --gray-200:    #dde1e9;
+  --gray-300:    #c4cad6;
+  --gray-400:    #9aa3b2;
+  --gray-500:    #6e7a8a;
+  --gray-600:    #4e5769;
+  --gray-800:    #252e3f;
+  --font-display:'DM Serif Display', Georgia, serif;
+  --font-body:   'DM Sans', system-ui, sans-serif;
+  --r:  10px;
+  --rs: 6px;
+  --sh0: 0 1px 3px rgba(30,40,60,.06);
+  --sh1: 0 4px 16px rgba(30,40,60,.09);
+  --t:  .17s ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--gray-50);color:var(--gray-800);font-size:13.5px;line-height:1.5;min-height:100vh}
+
+/* ── HEADER ── */
+header{
+  background:var(--white);border-bottom:1px solid var(--gray-200);
+  padding:0 28px;display:flex;align-items:center;justify-content:space-between;
+  height:60px;position:sticky;top:0;z-index:200;box-shadow:var(--sh0);
+}
+.h-left{display:flex;align-items:center;gap:14px}
+.logo{
+  width:34px;height:34px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue),var(--pink));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:14px;color:#fff;
+}
+.h-titles h1{font-family:var(--font-display);font-size:17px;font-weight:400;letter-spacing:-.2px;line-height:1.2}
+.h-titles small{font-size:10.5px;font-weight:500;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em}
+.h-right{display:flex;align-items:center;gap:10px}
+.live-dot{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--gray-400)}
+.live-dot span{width:7px;height:7px;border-radius:50%;background:#5ecb8a;animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.82)}}
+.btn-refresh{
+  display:flex;align-items:center;gap:6px;
+  background:var(--blue-xlight);color:#3d72a8;
+  border:1px solid var(--blue-light);border-radius:var(--rs);
+  padding:6px 13px;font-family:var(--font-body);font-size:12.5px;font-weight:500;
+  cursor:pointer;transition:var(--t);
+}
+.btn-refresh:hover{background:var(--blue-light);border-color:var(--blue)}
+.btn-refresh svg{transition:transform .4s ease}
+.btn-refresh:hover svg{transform:rotate(180deg)}
+
+/* ── MAIN ── */
+main{padding:22px 28px;max-width:1900px;margin:0 auto}
+
+/* ── METRICS PANEL ── */
+.metrics-panel{
+  background:var(--white);border:1px solid var(--gray-200);
+  border-radius:var(--r);box-shadow:var(--sh0);overflow:hidden;margin-bottom:24px;
+}
+.metrics-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid var(--gray-100);
+}
+.metrics-title{font-size:13px;font-weight:500;color:var(--gray-800)}
+.metrics-sub{font-size:11.5px;font-weight:400;color:var(--gray-400);margin-left:6px}
+.metrics-section-lbl{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--gray-400);padding:10px 20px 4px;
+}
+.metrics-row2{display:grid;grid-template-columns:1fr 3fr;border-top:1px solid var(--gray-100)}
+.metrics-block{padding:0}
+.metrics-block:first-child{border-right:1px solid var(--gray-100)}
+.metrics-block .kpi-strip{border-radius:0;border:none;box-shadow:none}
+.metrics-panel .kpi-strip{border-radius:0;border:none;border-top:1px solid var(--gray-100);box-shadow:none}
+
+/* ── KPI STRIP ── */
+.kpi-strip{
+  display:flex;gap:0;
+  background:var(--white);border:1px solid var(--gray-200);
+  border-radius:var(--r);box-shadow:var(--sh0);
+  margin-bottom:18px;overflow:hidden;
+  animation:fadeUp .35s ease both;
+}
+.kpi-item{
+  flex:1;padding:16px 18px;
+  border-right:1px solid var(--gray-100);
+  transition:var(--t);cursor:default;
+}
+.kpi-item:last-child{border-right:none}
+.kpi-item:hover{background:var(--gray-50)}
+.kpi-lbl{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);margin-bottom:4px}
+.kpi-val{font-family:var(--font-display);font-size:30px;line-height:1;color:var(--gray-800)}
+.kpi-sub{font-size:11px;color:var(--gray-400);margin-top:3px}
+.kpi-item.c-blue .kpi-val{color:#3d72a8}
+.kpi-item.c-pink .kpi-val{color:#c050a0}
+.kpi-item.c-red  .kpi-val{color:#b84040}
+.kpi-item.c-purple .kpi-val{color:#6040b0}
+.kpi-bar{height:2px;background:var(--gray-100);border-radius:2px;margin-top:10px;overflow:hidden}
+.kpi-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--pink));transition:width .7s ease;border-radius:2px}
+
+/* ── TIME TOGGLE ── */
+.time-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:14px;animation:fadeUp .35s ease .05s both;
+}
+.time-lbl{font-size:11.5px;font-weight:500;color:var(--gray-500);text-transform:uppercase;letter-spacing:.06em}
+.tgl-group{display:flex;border:1px solid var(--gray-200);border-radius:var(--rs);overflow:hidden}
+.tgl-btn{
+  padding:5px 14px;font-family:var(--font-body);font-size:12px;font-weight:500;
+  background:var(--white);color:var(--gray-500);border:none;
+  border-right:1px solid var(--gray-200);cursor:pointer;transition:var(--t);
+}
+.tgl-btn:last-child{border-right:none}
+.tgl-btn.on{background:var(--blue-xlight);color:#3d72a8}
+.tgl-btn:hover:not(.on){background:var(--gray-50)}
+
+/* ── FILTERS ── */
+.filters{
+  background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r);
+  padding:14px 18px;margin-bottom:16px;box-shadow:var(--sh0);
+  animation:fadeUp .35s ease .08s both;
+}
+.f-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.f-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400)}
+.f-active{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.f-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;
+  background:var(--blue-xlight);color:#3d72a8;border:1px solid var(--blue-light);
+  border-radius:20px;padding:2px 8px;cursor:pointer;transition:var(--t)}
+.f-chip:hover{background:var(--blue-light)}
+.f-chip .x{font-size:10px;opacity:.7}
+.btn-clear{font-size:11.5px;font-weight:500;color:var(--pink);background:none;border:none;cursor:pointer;padding:3px 8px;border-radius:4px;transition:var(--t)}
+.btn-clear:hover{background:var(--pink-xlight)}
+.f-grid{display:grid;grid-template-columns:2fr repeat(5,1fr) auto;gap:9px;align-items:start}
+.fg{display:flex;flex-direction:column;gap:4px;position:relative}
+.fg label{font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.07em}
+.fg input.f-search{
+  width:100%;padding:7px 10px;
+  border:1px solid var(--gray-200);border-radius:var(--rs);
+  font-family:var(--font-body);font-size:12.5px;color:var(--gray-800);
+  background:var(--gray-50);outline:none;transition:var(--t);
+}
+.fg input.f-search:focus{border-color:var(--blue);background:var(--white);box-shadow:0 0 0 3px rgba(153,187,221,.15)}
+
+/* multiselect dropdown */
+.ms-trigger{
+  width:100%;padding:7px 28px 7px 10px;
+  border:1px solid var(--gray-200);border-radius:var(--rs);
+  font-family:var(--font-body);font-size:12.5px;color:var(--gray-800);
+  background:var(--gray-50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%239aa3b2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 9px center;
+  cursor:pointer;outline:none;transition:var(--t);text-align:left;
+  border-right:1px solid var(--gray-200);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  appearance:none;-webkit-appearance:none;
+}
+.ms-trigger:focus,.ms-trigger.open{border-color:var(--blue);background-color:var(--white);box-shadow:0 0 0 3px rgba(153,187,221,.15)}
+.ms-trigger.has-sel{border-color:var(--blue);background-color:var(--blue-xlight);color:#3d72a8;font-weight:500}
+
+.ms-dropdown{
+  position:fixed;z-index:500;
+  background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r);
+  box-shadow:var(--sh1);max-height:240px;overflow-y:auto;display:none;
+  min-width:180px;
+}
+.ms-dropdown.open{display:block}
+.ms-option{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;transition:var(--t);font-size:12.5px;color:var(--gray-800)}
+.ms-option:hover{background:var(--blue-xlight)}
+.ms-option input[type=checkbox]{width:13px;height:13px;accent-color:var(--blue);cursor:pointer;flex-shrink:0}
+.ms-option.checked{background:var(--blue-xlight);color:#3d72a8;font-weight:500}
+.ms-sep{height:1px;background:var(--gray-100);margin:3px 0}
+
+/* ── TABLE SECTION ── */
+.t-section{
+  background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r);
+  box-shadow:var(--sh0);overflow:hidden;
+  animation:fadeUp .35s ease .12s both;
+}
+.t-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;border-bottom:1px solid var(--gray-100);
+}
+.t-count{font-size:12.5px;color:var(--gray-400)}
+.t-count strong{color:var(--gray-800);font-weight:600}
+.t-wrap{overflow-x:auto}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+
+/* group header */
+thead tr.g-row th{
+  padding:5px 12px 3px;font-size:9.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;
+  border-bottom:none;color:var(--gray-400);background:var(--gray-50);
+}
+thead tr.g-row th.gb{background:var(--blue-xlight);color:#3d72a8}
+thead tr.g-row th.gp{background:var(--pink-xlight);color:#b040a0}
+thead tr.g-row th.gg{background:#edf7f1;color:#2a8050}
+thead tr.g-row th.gr{background:var(--gray-100);color:var(--gray-600)}
+
+/* col header */
+thead tr.c-row th{
+  padding:9px 12px;text-align:left;
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--gray-400);white-space:nowrap;cursor:pointer;user-select:none;
+  border-bottom:2px solid var(--gray-200);background:var(--gray-50);transition:color var(--t);
+}
+thead tr.c-row th:hover{color:var(--gray-800)}
+thead tr.c-row th .si{margin-left:3px;opacity:.35;font-size:9px}
+thead tr.c-row th.sorted .si{opacity:1;color:var(--blue)}
+thead tr.c-row th.gb{background:#f2f8fd}
+thead tr.c-row th.gp{background:#fdf5fc}
+thead tr.c-row th.gg{background:#f2fbf5}
+thead tr.c-row th.gr{background:var(--gray-50)}
+
+/* body */
+tbody tr{border-bottom:1px solid var(--gray-100);transition:background var(--t)}
+tbody tr:hover{background:var(--blue-xlight)}
+tbody tr:last-child{border-bottom:none}
+td{padding:10px 12px;vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gray-800)}
+td.wrap{white-space:normal;overflow:hidden}
+td.gb{background:rgba(153,187,221,.035)}
+td.gp{background:rgba(237,128,198,.03)}
+td.gg{background:rgba(90,200,140,.03)}
+
+/* ── ID badge ── */
+.id-badge{
+  font-size:10.5px;font-weight:600;font-family:monospace;
+  color:var(--gray-500);background:var(--gray-100);
+  padding:2px 7px;border-radius:4px;letter-spacing:.02em;
+}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:600;white-space:nowrap}
+/* Estado */
+.s-preonboarding{background:#ede8ff;color:#5535b8}
+.s-ongoing      {background:#e4f5ec;color:#277a4a}
+.s-onhold       {background:#fff8db;color:#967800}
+.s-pendiente    {background:#fff2e0;color:#a86010}
+.s-finalizada   {background:#eef0f4;color:#5e6880}
+.s-cancelada    {background:#fde8e8;color:#b03030}
+/* Tipo */
+.t-incremental  {background:var(--blue-xlight);color:#3060a0}
+.t-reemplazo    {background:var(--pink-xlight);color:#a03090}
+/* Marca */
+.m-todomoda     {background:#fce5f4;color:#a83598}
+.m-isadora      {background:#ece5ff;color:#5535b8}
+.m-staff        {background:#e4f5ec;color:#277a4a}
+/* Nivel */
+.n-badge        {background:var(--gray-100);color:var(--gray-600)}
+/* Confidencial */
+.conf-si        {background:#fff0e0;color:#a86010}
+.conf-no        {background:var(--gray-100);color:var(--gray-500)}
+
+/* ── TIME CHIPS ── */
+.tc{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.tc.ok     {background:#e4f5ec;color:#277a4a}
+.tc.warn   {background:#fff8db;color:#967800}
+.tc.danger {background:#fde8e8;color:#b03030}
+.tc.live   {background:var(--blue-xlight);color:#3d72a8}
+.tc.empty  {color:var(--gray-400);font-weight:400}
+
+/* ── SWITCHES ── */
+.switch-group{display:flex;flex-direction:column;gap:4px}
+.switch-group label{font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.07em}
+.switches{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.sw-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sw-lbl{font-size:12px;color:var(--gray-600)}
+.sw{position:relative;width:32px;height:18px;flex-shrink:0}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw-track{
+  position:absolute;inset:0;border-radius:20px;
+  background:var(--gray-200);cursor:pointer;transition:.2s;
+}
+.sw input:checked+.sw-track{background:var(--blue)}
+.sw-track::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:12px;height:12px;border-radius:50%;
+  background:white;transition:.2s;
+}
+.sw input:checked+.sw-track::after{transform:translateX(14px)}
+
+/* ── COMMENT BTN ── */
+.btn-comment{
+  background:none;border:none;cursor:pointer;
+  width:26px;height:26px;border-radius:6px;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--gray-400);transition:var(--t);position:relative;
+}
+.btn-comment:hover{background:var(--blue-xlight);color:#3d72a8}
+.btn-comment.has-comments{color:#3d72a8}
+.btn-comment .dot-badge{
+  position:absolute;top:3px;right:3px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--pink);border:1.5px solid var(--white);
+}
+
+/* ── DRAWER OVERLAY ── */
+.drawer-overlay{
+  position:fixed;inset:0;background:rgba(30,40,60,.25);
+  z-index:400;opacity:0;pointer-events:none;transition:opacity .22s ease;
+}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+
+/* ── DRAWER PANEL ── */
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:380px;max-width:95vw;
+  background:var(--white);border-left:1px solid var(--gray-200);
+  box-shadow:-4px 0 24px rgba(30,40,60,.1);
+  z-index:401;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.drawer.open{transform:translateX(0)}
+
+.drawer-head{
+  padding:18px 20px 14px;border-bottom:1px solid var(--gray-100);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;
+}
+.drawer-meta{display:flex;flex-direction:column;gap:3px}
+.drawer-id{font-size:10.5px;font-weight:600;font-family:monospace;color:var(--gray-400);letter-spacing:.04em}
+.drawer-title{font-family:var(--font-display);font-size:16px;font-weight:400;color:var(--gray-800);line-height:1.3}
+.btn-close{
+  background:none;border:none;cursor:pointer;width:28px;height:28px;
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  color:var(--gray-400);flex-shrink:0;transition:var(--t);font-size:16px;
+}
+.btn-close:hover{background:var(--gray-100);color:var(--gray-800)}
+
+.drawer-body{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+
+/* ── COMMENT ENTRIES ── */
+.comment-entry{
+  background:var(--gray-50);border:1px solid var(--gray-100);
+  border-radius:8px;padding:11px 13px;
+}
+.comment-meta{
+  display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap;
+}
+.comment-author{
+  font-size:11.5px;font-weight:600;color:var(--gray-800);
+}
+.comment-date{
+  font-size:10.5px;color:var(--gray-400);
+}
+.comment-text{
+  font-size:12.5px;color:var(--gray-600);line-height:1.55;white-space:pre-wrap;
+}
+.comment-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;padding:40px 20px;color:var(--gray-400);text-align:center;
+}
+.comment-empty .icon{font-size:28px}
+.comment-empty p{font-size:12.5px}
+
+.drawer-foot{
+  padding:14px 20px;border-top:1px solid var(--gray-100);flex-shrink:0;
+  background:var(--gray-50);
+}
+.comment-form{display:flex;flex-direction:column;gap:10px}
+.cf-row{display:flex;flex-direction:column;gap:4px}
+.cf-lbl{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--gray-400)}
+.cf-input{
+  width:100%;padding:7px 10px;border:1px solid var(--gray-200);
+  border-radius:var(--rs);font-family:var(--font-body);font-size:13px;
+  color:var(--gray-800);background:var(--white);outline:none;transition:var(--t);
+}
+.cf-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(153,187,221,.15)}
+.cf-textarea{
+  width:100%;padding:8px 10px;border:1px solid var(--gray-200);
+  border-radius:var(--rs);font-family:var(--font-body);font-size:13px;
+  color:var(--gray-800);background:var(--white);outline:none;
+  resize:vertical;min-height:80px;transition:var(--t);line-height:1.5;
+}
+.cf-textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(153,187,221,.15)}
+.cf-actions{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cf-hint{font-size:11px;color:var(--gray-400)}
+.cf-hint.ok{color:#2d8a52}
+.cf-hint.err{color:#b03030}
+.cf-btn{
+  display:flex;align-items:center;gap:6px;
+  background:var(--blue-xlight);color:#3d72a8;
+  border:1px solid var(--blue-light);border-radius:var(--rs);
+  padding:7px 16px;font-family:var(--font-body);font-size:13px;font-weight:500;
+  cursor:pointer;transition:var(--t);
+}
+.cf-btn:hover{background:var(--blue-light);border-color:var(--blue)}
+.cf-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── STATE BOX ── */
+.state-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 32px;gap:10px;color:var(--gray-400)}
+.state-box .icon{font-size:32px}
+.state-box .st{font-size:15px;font-weight:500;color:var(--gray-600)}
+.state-box p{font-size:13px;text-align:center}
+.spinner{width:28px;height:28px;border:2.5px solid var(--gray-200);border-top-color:var(--blue);border-radius:50%;animation:spin .65s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── FOOTER ── */
+footer{text-align:center;padding:18px;font-size:10.5px;color:var(--gray-400);letter-spacing:.04em}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  main{padding:14px 10px}
+  header{padding:0 14px}
+  .f-grid{grid-template-columns:1fr 1fr}
+  .kpi-strip{flex-wrap:wrap}
+  .kpi-item{min-width:calc(50% - 1px)}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="h-left">
+    <div class="logo">B</div>
+    <div class="h-titles">
+      <h1>BSG · Talent Tracker</h1>
+      <small>People &amp; Talent · Blue Star Group</small>
+    </div>
+  </div>
+  <div class="h-right">
+    <div class="live-dot"><span></span><span id="lastUpdate">Sin datos aún</span></div>
+    <button class="btn-refresh" onclick="loadData()">
+      <svg id="ri" width="13" height="13" fill="none" viewBox="0 0 16 16">
+        <path d="M13.65 2.35A8 8 0 1 0 15 8h-2a6 6 0 1 1-1.06-3.39L9.5 7H15V1.5l-1.35.85z" fill="currentColor"/>
+      </svg>
+      Actualizar
+    </button>
+  </div>
+</header>
+
+<!-- ══ MAIN ══ -->
+<main>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="f-top">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="f-title">Filtros</span>
+        <div class="f-active" id="fChips"></div>
+      </div>
+      <button class="btn-clear" onclick="clearFilters()">✕ Limpiar</button>
+    </div>
+    <div class="f-grid">
+      <div class="fg">
+        <label>Buscar</label>
+        <input type="text" id="fQ" class="f-search" placeholder="ID, puesto, recruiter, hiring manager…" oninput="applyFilters()">
+      </div>
+      <!-- Estado -->
+      <div class="fg" id="fg-estado">
+        <label>Estado</label>
+        <button class="ms-trigger" id="tr-estado" onclick="toggleDD('estado')">Todos</button>
+        <div class="ms-dropdown" id="dd-estado">
+          <div class="ms-sep"></div>
+          <label class="ms-option"><input type="checkbox" value="on going" onchange="onMS('estado')"> On Going</label>
+          <label class="ms-option"><input type="checkbox" value="pre-onboarding" onchange="onMS('estado')"> Pre-Onboarding</label>
+          <label class="ms-option"><input type="checkbox" value="on hold" onchange="onMS('estado')"> On Hold</label>
+          <label class="ms-option"><input type="checkbox" value="pendiente de aprobación" onchange="onMS('estado')"> Pendiente de aprobación</label>
+          <label class="ms-option"><input type="checkbox" value="finalizada" onchange="onMS('estado')"> Finalizada</label>
+          <label class="ms-option"><input type="checkbox" value="cancelada" onchange="onMS('estado')"> Cancelada</label>
+        </div>
+      </div>
+      <!-- País -->
+      <div class="fg" id="fg-pais">
+        <label>País</label>
+        <button class="ms-trigger" id="tr-pais" onclick="toggleDD('pais')">Todos</button>
+        <div class="ms-dropdown" id="dd-pais">
+          <div class="ms-sep"></div>
+          <label class="ms-option"><input type="checkbox" value="argentina" onchange="onMS('pais')"> Argentina</label>
+          <label class="ms-option"><input type="checkbox" value="chile" onchange="onMS('pais')"> Chile</label>
+          <label class="ms-option"><input type="checkbox" value="méxico" onchange="onMS('pais')"> México</label>
+          <label class="ms-option"><input type="checkbox" value="perú" onchange="onMS('pais')"> Perú</label>
+          <label class="ms-option"><input type="checkbox" value="españa" onchange="onMS('pais')"> España</label>
+          <label class="ms-option"><input type="checkbox" value="brasil" onchange="onMS('pais')"> Brasil</label>
+          <label class="ms-option"><input type="checkbox" value="china" onchange="onMS('pais')"> China</label>
+          <label class="ms-option"><input type="checkbox" value="casa matriz" onchange="onMS('pais')"> Casa Matriz</label>
+        </div>
+      </div>
+      <!-- Recruiter -->
+      <div class="fg" id="fg-recruiter">
+        <label>Recruiter</label>
+        <button class="ms-trigger" id="tr-recruiter" onclick="toggleDD('recruiter')">Todos</button>
+        <div class="ms-dropdown" id="dd-recruiter"></div>
+      </div>
+      <!-- Área -->
+      <div class="fg" id="fg-area">
+        <label>Área</label>
+        <button class="ms-trigger" id="tr-area" onclick="toggleDD('area')">Todas</button>
+        <div class="ms-dropdown" id="dd-area"></div>
+      </div>
+      <!-- Marca -->
+      <div class="fg" id="fg-marca">
+        <label>Marca</label>
+        <button class="ms-trigger" id="tr-marca" onclick="toggleDD('marca')">Todas</button>
+        <div class="ms-dropdown" id="dd-marca">
+          <div class="ms-sep"></div>
+          <label class="ms-option"><input type="checkbox" value="todomoda" onchange="onMS('marca')"> Todomoda</label>
+          <label class="ms-option"><input type="checkbox" value="isadora" onchange="onMS('marca')"> Isadora</label>
+          <label class="ms-option"><input type="checkbox" value="staff" onchange="onMS('marca')"> Staff</label>
+        </div>
+      </div>
+      <!-- Switches -->
+      <div class="switch-group">
+        <label>Filtros rápidos</label>
+        <div class="switches">
+          <div class="sw-row">
+            <span class="sw-lbl">Solo incrementales</span>
+            <label class="sw"><input type="checkbox" id="swIncremental" onchange="applyFilters()"><span class="sw-track"></span></label>
+          </div>
+          <div class="sw-row">
+            <span class="sw-lbl">Solo confidenciales</span>
+            <label class="sw"><input type="checkbox" id="swConf" onchange="applyFilters()"><span class="sw-track"></span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="t-section">
+    <div class="t-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="tgl-group">
+          <button class="tgl-btn on" onclick="setUnit('days',this)">Días</button>
+          <button class="tgl-btn"    onclick="setUnit('hours',this)">Horas</button>
+          <button class="tgl-btn"    onclick="setUnit('both',this)">Días + h</button>
+        </div>
+        <span style="font-size:10.5px;color:var(--gray-400)">tiempos</span>
+      </div>
+      <div class="t-count" id="tCount">Cargando…</div>
+    </div>
+    <div class="t-wrap">
+      <table>
+        <colgroup>
+          <col style="width:40px">
+          <col style="width:90px">
+          <col style="width:190px">
+          <col style="width:130px">
+          <col style="width:110px">
+          <col style="width:80px">
+          <col style="width:110px">
+          <col style="width:140px">
+          <col style="width:130px">
+          <col style="width:100px">
+          <col style="width:110px">
+          <col style="width:90px">
+          <col style="width:90px">
+          <col style="width:110px">
+          <col style="width:120px">
+          <col style="width:130px">
+          <col style="width:160px">
+          <col style="width:90px">
+          <col style="width:110px">
+          <col style="width:100px">
+          <col style="width:100px">
+        </colgroup>
+        <thead>
+          <!-- GROUP ROW -->
+          <tr class="g-row">
+            <th></th>
+            <th colspan="3">Búsqueda</th>
+            <th colspan="6" class="gb">Organización</th>
+            <th colspan="3" class="gp">Sobre el candidato</th>
+            <th colspan="5" class="gg">Proceso</th>
+            <th colspan="3" class="gr">Tiempos</th>
+          </tr>
+          <!-- COL ROW -->
+          <tr class="c-row" id="colRow">
+            <th style="width:36px"></th>
+            <!-- Búsqueda -->
+            <th onclick="st(0)">ID <span class="si">↕</span></th>
+            <th onclick="st(1)">Nombre del Puesto / Recruiter <span class="si">↕</span></th>
+            <th onclick="st(2)">Estado <span class="si">↕</span></th>
+            <!-- Organización -->
+            <th class="gb" onclick="st(3)">Tipo <span class="si">↕</span></th>
+            <th class="gb">Confidencial</th>
+            <th class="gb">Reemplaza a</th>
+            <th class="gb" onclick="st(5)">País <span class="si">↕</span></th>
+            <th class="gb" onclick="st(6)">Hiring Manager <span class="si">↕</span></th>
+            <th class="gb" onclick="st(7)">Área <span class="si">↕</span></th>
+            <!-- Candidato -->
+            <th class="gp" onclick="st(8)">Marca <span class="si">↕</span></th>
+            <th class="gp" onclick="st(9)">Categoría <span class="si">↕</span></th>
+            <th class="gp" onclick="st(10)">Nivel <span class="si">↕</span></th>
+            <!-- Proceso -->
+            <th class="gg">Interno / Externo</th>
+            <th class="gg">Medio de llegada</th>
+            <th class="gg">Canal de postulación</th>
+            <th class="gg" onclick="st(15)">Candidatx seleccionadx <span class="si">↕</span></th>
+            <th class="gg">Género</th>
+            <!-- Tiempos -->
+            <th class="gr" onclick="st(17)">F. inicio búsqueda <span class="si">↕</span></th>
+            <th class="gr">Time to Offer</th>
+            <th class="gr">Time to Fill</th>
+            <th style="width:36px"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="state-box" id="stateBox">
+        <div class="spinner"></div>
+        <p>Cargando búsquedas…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- METRICS PANEL -->
+  <div class="metrics-panel" style="margin-top:18px">
+    <div class="metrics-head">
+      <div class="metrics-title">Métricas <span class="metrics-sub" id="metricsScope">sobre todas las búsquedas</span></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="time-lbl">Tiempos en:</span>
+        <div class="tgl-group">
+          <button class="tgl-btn on" onclick="setUnit('days',this)">Días</button>
+          <button class="tgl-btn" onclick="setUnit('hours',this)">Horas</button>
+          <button class="tgl-btn" onclick="setUnit('both',this)">Días + h</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila 1: estados -->
+    <div class="metrics-section-lbl">Estado</div>
+    <div class="kpi-strip">
+      <div class="kpi-item">
+        <div class="kpi-lbl">Total</div>
+        <div class="kpi-val" id="kTotal">—</div>
+        <div class="kpi-sub">búsquedas</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="bTotal" style="width:100%"></div></div>
+      </div>
+      <div class="kpi-item c-blue">
+        <div class="kpi-lbl">On Going</div>
+        <div class="kpi-val" id="kOngoing">—</div>
+        <div class="kpi-sub" id="kOngoingSub">—</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="bOngoing" style="width:0%"></div></div>
+      </div>
+      <div class="kpi-item c-purple">
+        <div class="kpi-lbl">Pre-Onboarding</div>
+        <div class="kpi-val" id="kPreon">—</div>
+        <div class="kpi-sub" id="kPreonSub">—</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="bPreon" style="width:0%"></div></div>
+      </div>
+      <div class="kpi-item c-pink">
+        <div class="kpi-lbl">On Hold</div>
+        <div class="kpi-val" id="kOnhold">—</div>
+        <div class="kpi-sub" id="kOnholdSub">—</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="bOnhold" style="width:0%"></div></div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-lbl">Finalizada</div>
+        <div class="kpi-val" id="kFinalizada">—</div>
+        <div class="kpi-sub" id="kFinalizadaSub">—</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="bFinalizada" style="width:0%"></div></div>
+      </div>
+      <div class="kpi-item c-red">
+        <div class="kpi-lbl">+30 días abiertas</div>
+        <div class="kpi-val" id="k30">—</div>
+        <div class="kpi-sub">sin cerrar</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="b30" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Fila 2: tiempos -->
+    <div class="metrics-section-lbl">Tiempos promedio</div>
+    <div class="kpi-strip">
+      <div class="kpi-item c-blue">
+        <div class="kpi-lbl">Avg. Time to Offer</div>
+        <div class="kpi-val" id="kAvgOffer">—</div>
+        <div class="kpi-sub" id="kAvgOfferSub">días hábiles prom.</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="bAvgOffer" style="width:0%"></div></div>
+      </div>
+      <div class="kpi-item c-purple">
+        <div class="kpi-lbl">Avg. Time to Fill</div>
+        <div class="kpi-val" id="kAvgFill">—</div>
+        <div class="kpi-sub" id="kAvgFillSub">días hábiles prom.</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="bAvgFill" style="width:0%"></div></div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-lbl">Con fecha de oferta</div>
+        <div class="kpi-val" id="kConOferta">—</div>
+        <div class="kpi-sub">búsquedas cerradas</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="bConOferta" style="width:0%"></div></div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-lbl">Con fecha de ingreso</div>
+        <div class="kpi-val" id="kConIngreso">—</div>
+        <div class="kpi-sub">incorporaciones</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="bConIngreso" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Fila 3: tipo + marca -->
+    <div class="metrics-row2">
+      <div class="metrics-block">
+        <div class="metrics-section-lbl">Tipo</div>
+        <div class="kpi-strip">
+          <div class="kpi-item c-blue">
+            <div class="kpi-lbl">Incrementales</div>
+            <div class="kpi-val" id="kInc">—</div>
+            <div class="kpi-sub" id="kIncSub">—</div>
+            <div class="kpi-bar"><div class="kpi-bar-fill" id="bInc" style="width:0%"></div></div>
+          </div>
+          <div class="kpi-item c-pink">
+            <div class="kpi-lbl">Reemplazos</div>
+            <div class="kpi-val" id="kReemp">—</div>
+            <div class="kpi-sub" id="kReempSub">—</div>
+            <div class="kpi-bar"><div class="kpi-bar-fill" id="bReemp" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="metrics-block">
+        <div class="metrics-section-lbl">Marca</div>
+        <div class="kpi-strip">
+          <div class="kpi-item" style="border-left:3px solid #a83598">
+            <div class="kpi-lbl">Todomoda</div>
+            <div class="kpi-val" id="kTodo">—</div>
+            <div class="kpi-sub" id="kTodoSub">—</div>
+            <div class="kpi-bar"><div class="kpi-bar-fill" id="bTodo" style="width:0%;background:#a83598"></div></div>
+          </div>
+          <div class="kpi-item" style="border-left:3px solid #5535b8">
+            <div class="kpi-lbl">Isadora</div>
+            <div class="kpi-val" id="kIsa">—</div>
+            <div class="kpi-sub" id="kIsaSub">—</div>
+            <div class="kpi-bar"><div class="kpi-bar-fill" id="bIsa" style="width:0%;background:#5535b8"></div></div>
+          </div>
+          <div class="kpi-item" style="border-left:3px solid #277a4a">
+            <div class="kpi-lbl">Staff</div>
+            <div class="kpi-val" id="kStaff">—</div>
+            <div class="kpi-sub" id="kStaffSub">—</div>
+            <div class="kpi-bar"><div class="kpi-bar-fill" id="bStaff" style="width:0%;background:#277a4a"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+<footer>Blue Star Group · People &amp; Talent · Tracker v3.0 · 2025</footer>
+
+<!-- ══ COMMENT DRAWER ══ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-meta">
+      <div class="drawer-id" id="drawerID"></div>
+      <div class="drawer-title" id="drawerTitle"></div>
+    </div>
+    <button class="btn-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot">
+    <div class="comment-form">
+      <div class="cf-row">
+        <label class="cf-lbl">Tu nombre</label>
+        <input type="text" id="cfAutor" placeholder="Ej: Sofía R." class="cf-input">
+      </div>
+      <div class="cf-row">
+        <label class="cf-lbl">Acciones y próximas acciones</label>
+        <textarea id="cfTexto" placeholder="Escribí las acciones de esta semana y qué sigue…" class="cf-textarea"></textarea>
+      </div>
+      <div class="cf-actions">
+        <span class="cf-hint" id="cfHint"></span>
+        <button class="cf-btn" id="cfBtn" onclick="guardarComentario()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCRIPT ══ -->
+<script>
+// ┌──────────────────────────────────────────────────────────┐
+// │  CONFIGURACIÓN — pegá aquí la URL de tu Google Sheet     │
+// └──────────────────────────────────────────────────────────┘
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRry0_Tx78o1dDjBBrbfgVk_n0M-x3ahwFhCuCCAAZNA0V9gnzSR6HPvt3a1MNzetvLf3oFfynPbH8G/pub?gid=1618352297&single=true&output=csv";
+
+/*
+  COLUMNAS DEL SHEET (orden exacto, A→S):
+  A  ID Búsqueda
+  B  Nombre del Puesto
+  C  Recruiter asignado
+  D  Estado  (On Going / Pre-Onboarding / On Hold /
+              Pendiente de aprobación / Finalizada / Cancelada)
+  E  Tipo    (Incremental / Reemplazo)
+  F  Reemplaza a
+  G  País
+  H  Hiring Manager
+  I  Área
+  J  Marca   (Todomoda / Isadora / Staff)
+  K  Categoría
+  L  Nivel   (Analista / Coordinador / Jefe / Gerente / Director / …)
+  M  Confidencial  (Sí / No)
+  N  Interno / Externo
+  O  Medio de llegada
+  P  Canal de postulación
+  Q  Candidatx seleccionadx
+  R  Género
+  S  Fecha de inicio de búsqueda   (DD/MM/AAAA)
+  T  Fecha de cierre (Extensión OL) (DD/MM/AAAA)
+  U  Fecha de ingreso               (DD/MM/AAAA)
+*/
+
+// índices de columna en el array de cada fila
+const C = {
+  id:0, puesto:1, recruiter:2, estado:3, tipo:4, reemplaza:5,
+  pais:6, hm:7, area:8, marca:9, cat:10, nivel:11,
+  conf:12, intExt:13, medio:14, canal:15, selec:16, genero:17,
+  fApertura:18, fOferta:19, fIngreso:20, historial:21
+};
+
+let ALL=[], FILT=[], SORT_COL=-1, SORT_ASC=true, UNIT="days";
+
+// ── CARGA ──
+async function loadData(){
+  showState("loading");
+  const ico=document.getElementById("ri");
+  ico.style.animation="spin .65s linear infinite";
+  if(SHEET_URL==="TU_URL_AQUI"){
+    await new Promise(r=>setTimeout(r,650));
+    ALL=DEMO; finishLoad(); ico.style.animation=""; return;
+  }
+  try{
+    const r=await fetch(SHEET_URL+"&t="+Date.now());
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    ALL=parseCSV(await r.text()); finishLoad();
+  }catch(e){
+    showState("error","No se pudo conectar al Google Sheet.<br>Revisá la URL o tu conexión.");
+    document.getElementById("tCount").textContent="Error al cargar";
+  }
+  ico.style.animation="";
+}
+
+function finishLoad(){
+  const n=new Date();
+  document.getElementById("lastUpdate").textContent=
+    "Act. "+n.toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"})
+    +" · "+n.toLocaleDateString("es-AR");
+  populateDynamicFilters();
+  updateKPIs();
+  applyFilters();
+}
+
+// ── CSV ──
+function parseCSV(txt){
+  return txt.split(/\r?\n/).slice(1)
+    .map(l=>l.trim()).filter(Boolean).map(splitLine);
+}
+function splitLine(l){
+  const res=[]; let cur="",inQ=false;
+  for(let i=0;i<l.length;i++){
+    const c=l[i];
+    if(c==='"'){if(inQ&&l[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(c===','&&!inQ){res.push(cur.trim());cur="";}
+    else cur+=c;
+  }
+  res.push(cur.trim()); return res;
+}
+
+
+// ── KPIs ──
+function updateKPIs(){
+  const data = FILT.length > 0 || ALL.length === 0 ? FILT : ALL;
+  const total     = data.length;
+  const ongoing   = data.filter(r=>norm(r[C.estado])==="on going").length;
+  const preon     = data.filter(r=>norm(r[C.estado])==="pre-onboarding").length;
+  const onhold    = data.filter(r=>norm(r[C.estado])==="on hold").length;
+  const finalizada= data.filter(r=>norm(r[C.estado])==="finalizada").length;
+  const dias30    = data.filter(r=>{const d=pd(r[C.fApertura]);return d&&(Date.now()-d)>30*864e5;}).length;
+  const inc       = data.filter(r=>norm(r[C.tipo])==="incremental").length;
+  const reemp     = data.filter(r=>norm(r[C.tipo])==="reemplazo").length;
+  const todo      = data.filter(r=>norm(r[C.marca])==="todomoda").length;
+  const isa       = data.filter(r=>norm(r[C.marca])==="isadora").length;
+  const staff     = data.filter(r=>norm(r[C.marca])==="staff").length;
+
+  const offerTimes= data.map(r=>wdays(pd(r[C.fApertura]),pd(r[C.fOferta]))).filter(v=>v!==null&&v>0);
+  const fillTimes = data.map(r=>wdays(pd(r[C.fApertura]),pd(r[C.fIngreso]))).filter(v=>v!==null&&v>0);
+  const avgOffer  = offerTimes.length?Math.round(offerTimes.reduce((a,b)=>a+b,0)/offerTimes.length):null;
+  const avgFill   = fillTimes.length ?Math.round(fillTimes.reduce((a,b)=>a+b,0)/fillTimes.length):null;
+
+  const unit = v => v===null ? "—" : UNIT==="hours" ? v*8+"h" : UNIT==="both" ? v+"d / "+v*8+"h" : v+"d";
+  const pct  = v => total ? Math.round(v/total*100) : 0;
+  const sub  = (v,t) => total ? Math.round(v/t*100)+"% del total" : "—";
+
+  // scope label
+  const isFiltered = FILT.length !== ALL.length;
+  document.getElementById("metricsScope").textContent =
+    isFiltered ? `sobre ${total} búsquedas filtradas` : `sobre todas las búsquedas (${total})`;
+
+  setText("kTotal",      total);
+  setText("kOngoing",    ongoing);    setText("kOngoingSub",    sub(ongoing,total));
+  setText("kPreon",      preon);      setText("kPreonSub",      sub(preon,total));
+  setText("kOnhold",     onhold);     setText("kOnholdSub",     sub(onhold,total));
+  setText("kFinalizada", finalizada); setText("kFinalizadaSub", sub(finalizada,total));
+  setText("k30",         dias30);
+  setText("kAvgOffer",   unit(avgOffer)); setText("kAvgOfferSub", UNIT==="hours"?"horas hábiles prom.":"días hábiles prom.");
+  setText("kAvgFill",    unit(avgFill));  setText("kAvgFillSub",  UNIT==="hours"?"horas hábiles prom.":"días hábiles prom.");
+  setText("kConOferta",  offerTimes.length);
+  setText("kConIngreso", fillTimes.length);
+  setText("kInc",   inc);   setText("kIncSub",   sub(inc,total));
+  setText("kReemp", reemp); setText("kReempSub", sub(reemp,total));
+  setText("kTodo",  todo);  setText("kTodoSub",  sub(todo,total));
+  setText("kIsa",   isa);   setText("kIsaSub",   sub(isa,total));
+  setText("kStaff", staff); setText("kStaffSub", sub(staff,total));
+
+  setBar("bTotal",100);
+  setBar("bOngoing",   pct(ongoing));   setBar("bPreon",     pct(preon));
+  setBar("bOnhold",    pct(onhold));    setBar("bFinalizada",pct(finalizada));
+  setBar("b30",        pct(dias30));
+  setBar("bAvgOffer",  avgOffer?Math.min(Math.round(avgOffer/60*100),100):0);
+  setBar("bAvgFill",   avgFill ?Math.min(Math.round(avgFill/60*100),100):0);
+  setBar("bConOferta", pct(offerTimes.length));
+  setBar("bConIngreso",pct(fillTimes.length));
+  setBar("bInc",  pct(inc));  setBar("bReemp",pct(reemp));
+  setBar("bTodo", pct(todo)); setBar("bIsa",  pct(isa)); setBar("bStaff",pct(staff));
+}
+
+// ── TOGGLE ──
+function setUnit(u,btn){
+  UNIT=u;
+  document.querySelectorAll(".tgl-btn").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  updateKPIs(); renderTable();
+}
+
+// ── MULTISELECT DROPDOWNS ──
+const MS_FIELDS = ['estado','pais','recruiter','area','marca'];
+
+function getSelected(field){
+  return [...document.querySelectorAll(`#dd-${field} input[type=checkbox]:checked`)].map(cb=>cb.value);
+}
+
+function toggleDD(field){
+  const dd=document.getElementById("dd-"+field);
+  const tr=document.getElementById("tr-"+field);
+  const isOpen=dd.classList.contains("open");
+  // close all
+  MS_FIELDS.forEach(f=>{
+    document.getElementById("dd-"+f).classList.remove("open");
+    document.getElementById("tr-"+f).classList.remove("open");
+  });
+  if(!isOpen){
+    const rect=tr.getBoundingClientRect();
+    dd.style.top  = (rect.bottom + 4) + "px";
+    dd.style.left = rect.left + "px";
+    dd.style.width= rect.width + "px";
+    dd.classList.add("open");
+    tr.classList.add("open");
+  }
+}
+
+// close dropdowns when clicking outside
+document.addEventListener("click", e=>{
+  if(!e.target.closest(".fg")) {
+    MS_FIELDS.forEach(f=>{
+      document.getElementById("dd-"+f)?.classList.remove("open");
+      document.getElementById("tr-"+f)?.classList.remove("open");
+    });
+  }
+});
+
+function onMS(field){
+  const sel=getSelected(field);
+  const tr=document.getElementById("tr-"+field);
+  const opts=document.querySelectorAll(`#dd-${field} .ms-option`);
+  opts.forEach(opt=>{
+    const cb=opt.querySelector("input");
+    opt.classList.toggle("checked", cb && cb.checked);
+  });
+  if(sel.length===0){
+    tr.textContent=field==="area"?"Todas":"Todos";
+    tr.classList.remove("has-sel");
+  } else {
+    tr.textContent=sel.length===1
+      ? document.querySelector(`#dd-${field} input[value="${sel[0]}"]`)?.closest(".ms-option")?.textContent.trim() || sel[0]
+      : sel.length+" seleccionados";
+    tr.classList.add("has-sel");
+  }
+  updateChips();
+  applyFilters();
+}
+
+function updateChips(){
+  const container=document.getElementById("fChips");
+  if(!container) return;
+  const chips=[];
+  MS_FIELDS.forEach(field=>{
+    getSelected(field).forEach(val=>{
+      const lbl=document.querySelector(`#dd-${field} input[value="${val}"]`)?.closest(".ms-option")?.textContent.trim()||val;
+      chips.push(`<span class="f-chip" onclick="removeChip('${field}','${val}')">${lbl} <span class="x">✕</span></span>`);
+    });
+  });
+  container.innerHTML=chips.join("");
+}
+
+function removeChip(field, val){
+  const cb=document.querySelector(`#dd-${field} input[value="${val}"]`);
+  if(cb){ cb.checked=false; onMS(field); }
+}
+
+function populateDynamicFilters(){
+  ['recruiter','area'].forEach(field=>{
+    const col=field==='recruiter'?C.recruiter:C.area;
+    const vals=[...new Set(ALL.map(r=>r[col]).filter(Boolean))].sort();
+    const dd=document.getElementById("dd-"+field);
+    dd.innerHTML='<div class="ms-sep"></div>'+vals.map(v=>
+      `<label class="ms-option"><input type="checkbox" value="${norm(v)}" onchange="onMS('${field}')"> ${e(v)}</label>`
+    ).join("");
+  });
+}
+
+// ── FILTERS ──
+function applyFilters(){
+  const q      = document.getElementById("fQ").value.toLowerCase();
+  const estado = getSelected("estado");
+  const pais   = getSelected("pais");
+  const rec    = getSelected("recruiter");
+  const area   = getSelected("area");
+  const marca  = getSelected("marca");
+  const swInc  = document.getElementById("swIncremental").checked;
+  const swCon  = document.getElementById("swConf").checked;
+
+  FILT=ALL.filter(r=>{
+    if(estado.length && !estado.includes(norm(r[C.estado])))    return false;
+    if(pais.length   && !pais.includes(norm(r[C.pais])))        return false;
+    if(rec.length    && !rec.includes(norm(r[C.recruiter])))    return false;
+    if(area.length   && !area.includes(norm(r[C.area])))        return false;
+    if(marca.length  && !marca.includes(norm(r[C.marca])))      return false;
+    if(swInc && norm(r[C.tipo]) !== "incremental")              return false;
+    if(swCon && !norm(r[C.conf]).startsWith("s"))               return false;
+    if(q){
+      const hay=[r[C.id],r[C.puesto],r[C.recruiter],r[C.hm],r[C.area]].join(" ").toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  renderTable();
+  updateKPIs();
+  document.getElementById("tCount").innerHTML=
+    `Mostrando <strong>${FILT.length}</strong> de <strong>${ALL.length}</strong> búsquedas`;
+}
+
+function clearFilters(){
+  document.getElementById("fQ").value="";
+  MS_FIELDS.forEach(field=>{
+    document.querySelectorAll(`#dd-${field} input[type=checkbox]`).forEach(cb=>cb.checked=false);
+    const tr=document.getElementById("tr-"+field);
+    tr.textContent=field==="area"?"Todas":"Todos";
+    tr.classList.remove("has-sel","open");
+    document.getElementById("dd-"+field).classList.remove("open");
+    document.querySelectorAll(`#dd-${field} .ms-option`).forEach(o=>o.classList.remove("checked"));
+  });
+  document.getElementById("swIncremental").checked=false;
+  document.getElementById("swConf").checked=false;
+  document.getElementById("fChips").innerHTML="";
+  applyFilters();
+}
+
+// ── RENDER ──
+function renderTable(){
+  const tbody=document.getElementById("tbody");
+  const box  =document.getElementById("stateBox");
+  if(FILT.length===0&&ALL.length===0){
+    tbody.innerHTML="";
+    showState("empty","No hay datos cargados todavía.<br>Configurá el Google Sheet e intentá actualizar.");
+    return;
+  }
+  if(FILT.length===0){
+    tbody.innerHTML="";
+    showState("no-results","No hay búsquedas que coincidan con los filtros.");
+    return;
+  }
+  box.style.display="none"; tbody.style.display="";
+
+  const active=r=>{const s=norm(r[C.estado]);return s==="on going"||s==="on hold"||s==="pendiente de aprobación"||s==="pre-onboarding";};
+
+  tbody.innerHTML=FILT.map(r=>{
+    const dA=pd(r[C.fApertura]), dO=pd(r[C.fOferta]), dI=pd(r[C.fIngreso]);
+    const live=active(r);
+    return `<tr>
+      <td style="text-align:center">${commentBtn(r)}</td>
+      <td><span class="id-badge">${e(r[C.id])}</span></td>
+      <td class="wrap">
+        <div style="font-weight:600;font-size:12.5px">${e(r[C.puesto])}</div>
+        ${r[C.recruiter]?`<div style="font-size:11px;color:var(--gray-400);margin-top:2px">👤 ${e(r[C.recruiter])}</div>`:""}
+      </td>
+      <td>${estadoBadge(r[C.estado])}</td>
+      <td class="gb">${tipoBadge(r[C.tipo])}</td>
+      <td class="gb">${confBadge(r[C.conf])}</td>
+      <td class="gb">${e(r[C.reemplaza])||dash()}</td>
+      <td class="gb">${e(r[C.pais])}</td>
+      <td class="gb">${e(r[C.hm])||dash()}</td>
+      <td class="gb">${e(r[C.area])||dash()}</td>
+      <td class="gp">${marcaBadge(r[C.marca])}</td>
+      <td class="gp" style="color:var(--gray-600)">${e(r[C.cat])||dash()}</td>
+      <td class="gp">${r[C.nivel]?`<span class="badge n-badge">${e(r[C.nivel])}</span>`:dash()}</td>
+      <td class="gg">${e(r[C.intExt])||dash()}</td>
+      <td class="gg">${e(r[C.medio])||dash()}</td>
+      <td class="gg">${e(r[C.canal])||dash()}</td>
+      <td class="gg"><strong>${e(r[C.selec])||dash()}</strong></td>
+      <td class="gg">${e(r[C.genero])||dash()}</td>
+      <td>${e(r[C.fApertura])||dash()}</td>
+      <td>${fmtTime(dA,dO,live)}</td>
+      <td>${fmtTime(dA,dI,live)}</td>
+    </tr>`;
+  }).join("");
+}
+
+// ── SORT ──
+const COL_DATA=[C.id,C.puesto,C.estado,C.tipo,C.reemplaza,C.pais,C.hm,C.area,C.marca,C.cat,C.nivel,C.conf,C.intExt,C.medio,C.canal,C.selec,C.genero,C.fApertura];
+function st(col){
+  if(SORT_COL===col) SORT_ASC=!SORT_ASC; else{SORT_COL=col;SORT_ASC=true;}
+  document.querySelectorAll("tr.c-row th").forEach((th,i)=>{
+    th.classList.toggle("sorted",i===col);
+    const s=th.querySelector(".si"); if(s) s.textContent=i===col?(SORT_ASC?"↑":"↓"):"↕";
+  });
+  const di=COL_DATA[col]??col;
+  FILT.sort((a,b)=>{
+    const av=(a[di]||"").toLowerCase(), bv=(b[di]||"").toLowerCase();
+    const n=parseFloat(av)-parseFloat(bv);
+    const c=!isNaN(n)?n:av.localeCompare(bv,"es");
+    return SORT_ASC?c:-c;
+  });
+  renderTable();
+}
+
+// ── TIEMPOS ──
+function wdays(d1,d2){
+  if(!d1||!d2) return null;
+  const a=new Date(Math.min(d1,d2)), b=new Date(Math.max(d1,d2));
+  a.setHours(0,0,0,0); b.setHours(0,0,0,0);
+  let days=0; const cur=new Date(a);
+  while(cur<b){const dw=cur.getDay();if(dw!==0&&dw!==6)days++;cur.setDate(cur.getDate()+1);}
+  return days;
+}
+function fmtTime(d1,d2,live){
+  if(!d1) return `<span class="tc empty">—</span>`;
+  const end=d2||(live?new Date():null);
+  if(!end) return `<span class="tc empty">—</span>`;
+  const days=wdays(d1,end); if(days===null) return `<span class="tc empty">—</span>`;
+  const hrs=days*8;
+  let txt="";
+  if(UNIT==="days")  txt=days+"d";
+  else if(UNIT==="hours") txt=hrs+"h";
+  else txt=days+"d / "+hrs+"h";
+  const cls=!d2&&live?"live":days<20?"ok":days<40?"warn":"danger";
+  return `<span class="tc ${cls}">${!d2&&live?"⏱ ":""}${txt}</span>`;
+}
+
+// ── BADGES ──
+function estadoBadge(v){
+  const map={"on going":"ongoing","pre-onboarding":"preonboarding","on hold":"onhold",
+    "pendiente de aprobación":"pendiente","finalizada":"finalizada","cancelada":"cancelada"};
+  const labels={"ongoing":"On Going","preonboarding":"Pre-Onboarding","onhold":"On Hold",
+    "pendiente":"Pend. aprobación","finalizada":"Finalizada","cancelada":"Cancelada"};
+  const k=map[norm(v)]||"finalizada";
+  return `<span class="badge s-${k}">${labels[k]}</span>`;
+}
+function tipoBadge(v){
+  const k=norm(v)==="incremental"?"incremental":"reemplazo";
+  return `<span class="badge t-${k}">${e(v)||"—"}</span>`;
+}
+function marcaBadge(v){
+  const n=norm(v);
+  const k=n==="todomoda"?"todomoda":n==="isadora"?"isadora":"staff";
+  return v?`<span class="badge m-${k}">${e(v)}</span>`:dash();
+}
+function confBadge(v){
+  const si=norm(v).startsWith("s");
+  return `<span class="badge ${si?"conf-si":"conf-no"}">${si?"Sí":"No"}</span>`;
+}
+
+// ── COMMENTS ──
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz71p_YdMUYaFOXdE7FalO4aP936C6nxzwDgtpJkX57emQFK3nE_sKeVvxeAXMH8D4g/exec";
+
+let DRAWER_ID = "";
+
+function commentBtn(r){
+  const raw=(r[C.historial]||"").trim();
+  const hasComments=raw.length>0;
+  return `<button class="btn-comment${hasComments?" has-comments":""}"
+    onclick="openDrawer(${JSON.stringify(raw)},${JSON.stringify(r[C.id])},${JSON.stringify(r[C.puesto])})"
+    title="${hasComments?"Ver historial":"Sin comentarios aún"}">
+    <svg width="15" height="15" fill="none" viewBox="0 0 16 16">
+      <path d="M14 1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3l3 3 3-3h3a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+    </svg>
+    ${hasComments?'<span class="dot-badge"></span>':''}
+  </button>`;
+}
+
+function renderComments(raw){
+  const body=document.getElementById("drawerBody");
+  if(!raw||!raw.trim()){
+    body.innerHTML=`<div class="comment-empty">
+      <div class="icon">💬</div>
+      <p>No hay comentarios todavía.<br>Sé el primero en agregar uno.</p>
+    </div>`;
+    return;
+  }
+  const lines=raw.split(/\n/).map(l=>l.trim()).filter(Boolean).reverse();
+  body.innerHTML=lines.map(line=>{
+    const parts=line.split("|").map(p=>p.trim());
+    if(parts.length>=3){
+      const [fecha,autor,...resto]=parts;
+      return `<div class="comment-entry">
+        <div class="comment-meta">
+          <span class="comment-author">${e(autor)}</span>
+          <span class="comment-date">${e(fecha)}</span>
+        </div>
+        <div class="comment-text">${e(resto.join(" | "))}</div>
+      </div>`;
+    }
+    return `<div class="comment-entry"><div class="comment-text">${e(line)}</div></div>`;
+  }).join("");
+}
+
+function openDrawer(raw, id, title){
+  DRAWER_ID = id;
+  document.getElementById("drawerID").textContent=id;
+  document.getElementById("drawerTitle").textContent=title;
+  document.getElementById("cfTexto").value="";
+  document.getElementById("cfHint").textContent="";
+  document.getElementById("cfHint").className="cf-hint";
+  renderComments(raw);
+  document.getElementById("drawer").classList.add("open");
+  document.getElementById("drawerOverlay").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+
+function closeDrawer(){
+  document.getElementById("drawer").classList.remove("open");
+  document.getElementById("drawerOverlay").classList.remove("open");
+  document.body.style.overflow="";
+}
+
+async function guardarComentario(){
+  const autor = document.getElementById("cfAutor").value.trim();
+  const texto = document.getElementById("cfTexto").value.trim();
+  const hint  = document.getElementById("cfHint");
+  const btn   = document.getElementById("cfBtn");
+
+  if(!autor){ hint.textContent="Escribí tu nombre primero."; hint.className="cf-hint err"; return; }
+  if(!texto){ hint.textContent="El comentario no puede estar vacío."; hint.className="cf-hint err"; return; }
+
+  const hoy = new Date();
+  const fecha = hoy.getFullYear()+"-"+String(hoy.getMonth()+1).padStart(2,"0")+"-"+String(hoy.getDate()).padStart(2,"0");
+  const linea = `${fecha} | ${autor} | ${texto.replace(/\n/g," ")}`;
+
+  btn.disabled=true;
+  btn.textContent="Guardando…";
+  hint.textContent="";
+  hint.className="cf-hint";
+
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({id: DRAWER_ID, linea})
+    });
+    // no-cors no devuelve body, asumimos éxito si no hubo error
+    hint.textContent="✓ Guardado correctamente. Actualizá el tracker para verlo.";
+    hint.className="cf-hint ok";
+    document.getElementById("cfTexto").value="";
+  } catch(err){
+    hint.textContent="Error al guardar. Revisá tu conexión.";
+    hint.className="cf-hint err";
+  }
+
+  btn.disabled=false;
+  btn.textContent="Guardar";
+}
+
+// ── UTILS ──
+function norm(s){return(s||"").toLowerCase().trim()}
+function e(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function dash(){return'<span style="color:var(--gray-300)">—</span>'}
+function setText(id,v){const el=document.getElementById(id);if(el)el.textContent=v}
+function setBar(id,p){const el=document.getElementById(id);if(el)el.style.width=p+"%"}
+function pd(s){
+  if(!s) return null;
+  const p=(s||"").trim().split("/");
+  if(p.length===3) return new Date(+p[2],+p[1]-1,+p[0]);
+  return new Date(s);
+}
+function showState(type,msg){
+  const box=document.getElementById("stateBox");
+  const tbody=document.getElementById("tbody");
+  tbody.style.display="none"; box.style.display="flex";
+  if(type==="loading") box.innerHTML=`<div class="spinner"></div><p>Cargando búsquedas…</p>`;
+  else if(type==="error") box.innerHTML=`<div class="icon">⚠️</div><div class="st">Error de conexión</div><p>${msg}</p>`;
+  else box.innerHTML=`<div class="icon">🔍</div><div class="st">Sin resultados</div><p>${msg}</p>`;
+}
+
+// ── DEMO DATA ──
+// [id, puesto, recruiter, estado, tipo, reemplaza, pais, hm, area,
+//  marca, cat, nivel, conf, intExt, medio, canal, selec, genero,
+//  fApertura, fOferta, fIngreso]
+const DEMO=[
+  ["BSG-2025-001","Gerente de Marketing","Sofía Ramírez","On Going","Incremental","","Argentina","Ana Gómez","Marketing","Todomoda","Senior","Gerente","No","Externo","LinkedIn","Portal web","","","01/03/2025","","","2025-03-05 | Sofía R. | Se abrió la búsqueda y se publicó en LinkedIn.\n2025-03-20 | Sofía R. | Primeras entrevistas con 3 candidatas.\n2025-04-10 | Ana Gómez | Se avanzó con candidata finalista, pendiente entrevista con CEO."],
+  ["BSG-2025-002","Analista de RRHH","Gianni Torres","On Going","Reemplazo","Laura Pérez","Chile","Marcos Ruiz","Personas","Staff","Semi-Senior","Analista","No","Interno","Referido","Email","","","15/03/2025","","","2025-03-16 | Gianni T. | Búsqueda iniciada por referido interno.\n2025-04-02 | Gianni T. | 2 candidatos en proceso de entrevistas técnicas."],
+  ["BSG-2025-003","Jefa de Logística","Estefi Muñoz","Pre-Onboarding","Incremental","","México","Sofía Vega","Operaciones","Isadora","Senior","Jefe","No","Externo","Consultora","Portal externo","Daniela Ríos","Femenino","01/04/2025","25/04/2025","12/05/2025","2025-04-01 | Estefi M. | Búsqueda iniciada con consultora externa.\n2025-04-20 | Estefi M. | Daniela Ríos seleccionada tras 3 rondas de entrevistas.\n2025-04-25 | Estefi M. | Carta oferta extendida y aceptada.\n2025-05-02 | Sofía Vega | Ingreso confirmado para el 12/05."],
+  ["BSG-2025-004","Diseñadora Gráfica","Ruthi Sáez","On Hold","Reemplazo","Carla N.","Argentina","Ana Gómez","Comunicación","Todomoda","Semi-Senior","Analista","No","Interno","Bolsa interna","","","","10/01/2025","","","2025-01-10 | Ruthi S. | Búsqueda iniciada.\n2025-02-15 | Ruthi S. | Pausada por freeze de HC. Pendiente aprobación gerencia."],
+  ["BSG-2025-005","Country Manager Perú","Valeria P.","On Going","Incremental","","Perú","CEO","Dirección","Staff","Senior","Director","Sí","Externo","Consultora","Consultora","","","15/02/2025","","","2025-02-15 | Valeria P. | Proceso confidencial iniciado con consultora senior.\n2025-03-10 | Valeria P. | Shortlist de 4 candidatos presentada al CEO.\n2025-04-18 | Valeria P. | Se avanzó con 2 finalistas. Segunda ronda pendiente."],
+  ["BSG-2025-006","Analista de Finanzas","Gianni Torres","Pre-Onboarding","Reemplazo","Diego L.","España","Luca Bianchi","Finanzas","Isadora","Semi-Senior","Analista","No","Externo","LinkedIn","Portal web","Martín López","Masculino","01/03/2025","28/04/2025","02/06/2025","2025-03-01 | Gianni T. | Publicación en LinkedIn.\n2025-04-10 | Gianni T. | Martín López seleccionado.\n2025-04-28 | Luca Bianchi | Oferta aceptada. Inicio pactado para junio."],
+  ["BSG-2025-007","Dev Full Stack","Sofía Ramírez","On Going","Incremental","","Brasil","Carlos Mota","IT","Staff","Senior","Especialista","No","Externo","GitHub Jobs","Portal externo","","","20/03/2025","","","2025-03-20 | Sofía R. | Publicación en GitHub Jobs y StackOverflow.\n2025-04-15 | Sofía R. | 15 aplicaciones recibidas, 4 avanzan a technical screen."],
+  ["BSG-2025-008","Asistente Comercial","Estefi Muñoz","Finalizada","Reemplazo","Mei W.","China","Wang Li","Comercial","Isadora","Junior","Analista","No","Interno","Bolsa interna","Email","Xu Ming","Masculino","01/12/2024","20/02/2025","01/03/2025","2024-12-01 | Estefi M. | Búsqueda iniciada internamente.\n2025-01-20 | Estefi M. | Xu Ming seleccionado tras entrevistas.\n2025-02-20 | Wang Li | Oferta extendida y aceptada.\n2025-03-01 | Estefi M. | Posición cubierta. Proceso cerrado."],
+  ["BSG-2025-009","Coord. de Eventos","Ruthi Sáez","Pendiente de aprobación","Incremental","","Casa Matriz","Valeria P.","Cultura","Staff","Semi-Senior","Coordinador","No","Interno","","","","","01/04/2025","","","2025-04-01 | Ruthi S. | Nueva posición creada. Pendiente firma de HC por dirección."],
+  ["BSG-2025-010","Visual Merchandiser","Gianni Torres","On Going","Reemplazo","Jimena R.","Argentina","Ana Gómez","Retail","Todomoda","Semi-Senior","Coordinador","No","Externo","Instagram","Formulario","","","15/01/2025","","","2025-01-15 | Gianni T. | Búsqueda urgente por apertura de tienda nueva.\n2025-02-10 | Gianni T. | 7 candidatos en proceso.\n2025-03-05 | Ana Gómez | Proceso extendido, tienda retrasó apertura."],
+];
+
+loadData();
+</script>
+
+<!--
+════════════════════════════════════════════════════════════
+  INSTRUCCIONES — CÓMO CONECTAR GOOGLE SHEETS
+════════════════════════════════════════════════════════════
+
+PASO 1 · Armá el Sheet con una hoja llamada "Tracker"
+  Fila 1 = encabezados. Columnas en este orden exacto:
+
+  A  ID Búsqueda
+  B  Nombre del Puesto
+  C  Recruiter asignado
+  D  Estado            (On Going / Pre-Onboarding / On Hold /
+                        Pendiente de aprobación / Finalizada / Cancelada)
+  E  Tipo              (Incremental / Reemplazo)
+  F  Reemplaza a
+  G  País
+  H  Hiring Manager
+  I  Área
+  J  Marca             (Todomoda / Isadora / Staff)
+  K  Categoría
+  L  Nivel             (Analista / Coordinador / Jefe / Gerente / Director)
+  M  Confidencial      (Sí / No)
+  N  Interno / Externo
+  O  Medio de llegada
+  P  Canal de postulación
+  Q  Candidatx seleccionadx
+  R  Género
+  S  Fecha de inicio de búsqueda     (DD/MM/AAAA)
+  T  Fecha de cierre (Extensión OL)  (DD/MM/AAAA)
+  U  Fecha de ingreso                (DD/MM/AAAA)
+  V  Historial de comentarios        (texto libre, una entrada por línea)
+     Formato por línea: AAAA-MM-DD | Nombre | Comentario
+     Ejemplo:
+     2025-03-01 | Sofía R. | Búsqueda iniciada
+     2025-04-10 | Gianni T. | Candidata finalista en proceso
+
+PASO 2 · Publicar como CSV
+  Archivo → Compartir → Publicar en la web
+  → Elegí "Tracker" → Formato: Valores separados por comas → Publicar
+  → Copiá la URL
+
+PASO 3 · Pegá la URL en este archivo
+  Buscá:  const SHEET_URL = "TU_URL_AQUI";
+  Reemplazá y guardá.
+
+PASO 4 · Abrí el HTML y apretá "Actualizar" para sincronizar.
+
+Tiempos calculados en días hábiles (lunes a viernes):
+  · Time to Offer = desde F. inicio hasta Fecha cierre (OL)
+  · Time to Fill  = desde F. inicio hasta Fecha de ingreso
+  · ⏱ = búsqueda activa sin fecha de cierre (cuenta hasta hoy)
+════════════════════════════════════════════════════════════
+-->
+</body>
+</html>
